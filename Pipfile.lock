@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "45851dbc3b4fc45b1e8a4bf384b0b6f2c96686a5058582e4375cd00e1c7afdb4"
+            "sha256": "07f30733a895a11d9fff708f3dd3f81104806fedc09435d2513065e08bc731cc"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -39,6 +39,13 @@
             ],
             "index": "pypi",
             "version": "==0.6.1"
+        },
+        "meteo-downloader": {
+            "hashes": [
+                "sha256:168e1da1df690fbfc65bb3974119f79435d7aef31580c34d7bb66c322502b8db"
+            ],
+            "index": "pypi",
+            "version": "==1.0"
         },
         "pendulum": {
             "hashes": [

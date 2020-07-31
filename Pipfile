@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 pyside2 = "*"
 maya = "*"
+meteo-downloader = "*"
 
 [requires]
 python_version = "3.8"

@@ -1,18 +1,20 @@
 import logging
 
+import os
+
 import pymel.core as pmc
 from pymel.core.system import Path
-
 
 log = logging.getLogger(__name__)
 
 
 class SceneFile(object):
-    """Class used to to represent a DCC software scene file
 
-    The class will be a convenient object that we can use to manipulate our 
-    scene files. Examples features include the ability to predefine our naming 
-    conventions and automatically increment our versions.
+    """Class used to to represent a Digital Content Creation software scene file
+
+    The SceneFile class will be a convenient object that can be used to manipulate
+    scene files inside of Maya. Examples features include the ability to predefine
+    naming conventions and automatically increment our versions.
 
     Attributes:
         dir (Path, optional): Directory to the scene file. Defaults to ''.
@@ -23,28 +25,38 @@ class SceneFile(object):
 
     """
 
-    def __init__(self, dir='', descriptor='main', version=1, ext="ma"):
+    def __init__(self, dir='', descriptor='main', version=1, ext='ma'):
 
-        """Initialises our attributes when class is instantiated.
+        """Initialises attributes when class is instantiated."""
 
-        If the scene has not been saved, initialise the attributes based on 
-        the defaults. Otherwise, if the scene is already saved, initialise 
-        attributes based on the file name of the opened scene.
-
-        """
-
-        self._dir = Path(dir)
+        self.dir = dir
         self.descriptor = descriptor
         self.version = version
         self.ext = ext
 
-    @property
-    def dir(self):
-        return self._dir
+    def get_dir(self):
+        return self.dir
 
-    @dir.setter
-    def dir(self, val):
-        self._dir = Path(val)
+    def set_dir(self, val):
+        self.dir = val
+
+    def get_descriptor(self):
+        return self.descriptor
+
+    def set_descriptor(self, val):
+        self.descriptor = val
+
+    def get_version(self):
+        return self.version
+
+    def set_version(self, val):
+        self.version = val
+
+    def get_ext(self):
+        return self.ext
+
+    def set_ext(self, val):
+        self.ext = val
 
     def basename(self):
 
@@ -57,8 +69,8 @@ class SceneFile(object):
 
         """
 
-        namePattern = "{descriptor}_{version:03d}.{ext}"
-        name = namePattern.format(descriptor=self.descriptor, version=self.version, ext=self.ext)
+        namepattern = "{descriptor}_{version:03d}.{ext}"
+        name = namepattern.format(descriptor=self.descriptor, version=self.version, ext=self.ext)
 
         return name
 
@@ -73,7 +85,7 @@ class SceneFile(object):
 
         """
 
-        return self.dir / self.basename()
+        return Path(self.dir) / self.basename()
 
     def save(self):
 
@@ -91,7 +103,7 @@ class SceneFile(object):
             self.dir.makedirs_p()
             pmc.system.saveAs(self.path())
 
-    def increment_and_save(self):
+    def increment_save(self):
 
         """Increments the version and saves the scene file.
 
@@ -102,3 +114,29 @@ class SceneFile(object):
             Path: The path to the scene file if successful, None, otherwise.
         """
 
+        _highestVersion = 0
+
+        dirs = os.listdir(self.dir)
+
+        for filename in dirs:
+
+            if filename.index(self.descriptor) > -1 and filename.endswith(self.ext):
+
+                # Take the extension out of the filename.
+                filename = filename.replace('.' + self.ext, '')
+
+                # Separate the file name's descriptor and version
+                _segments = filename.split('_')
+
+                # Only repopulate scene attributes if the filename has a descriptor AND version
+                if isinstance(_segments, list) and len(_segments) > 1:
+
+                    # Retrieve the file name's version.
+                    _version = int(_segments[1].lstrip('0'))
+
+                    if (_version > _highestVersion):
+                        _highestVersion = _version
+
+        if _highestVersion > 0:
+            self.set_version(_highestVersion)
+            self.save()
