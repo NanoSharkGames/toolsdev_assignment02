@@ -139,6 +139,5 @@ class SceneFile(object):
                     if (_version > _highestVersion):
                         _highestVersion = _version
 
-        if _highestVersion > 0:
-            self.set_version(_highestVersion + 1)
-            self.save()
+        self.set_version(_highestVersion + 1)
+        self.save()

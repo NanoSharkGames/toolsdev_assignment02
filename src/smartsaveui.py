@@ -119,6 +119,7 @@ class SmartSaveUI(QtWidgets.QDialog):
         self.save_btn.clicked.connect(self.save)
         self.cancel_btn.clicked.connect(self.cancel)
         self.inc_save_btn.clicked.connect(self.increment_save)
+        self.browse_btn.clicked.connect(self.browse)
 
     def update_scenefile_from_file(self):
 
@@ -187,6 +188,22 @@ class SmartSaveUI(QtWidgets.QDialog):
 
         if (self.scene.dir != ''):
             self.scene.increment_save()
+
+        self.update_scenefile_from_file()
+
+        self.version_sb.setValue(self.scene.version)
+
+    @QtCore.Slot()
+    def browse(self):
+
+        """Opens a browse dialog box to get folder"""
+
+        dialog = QtWidgets.QFileDialog(self, 'Browse', self.scene.dir, '')
+        dialog.setFileMode(QtWidgets.QFileDialog.DirectoryOnly)
+
+        if dialog.exec_() == QtWidgets.QDialog.Accepted:
+            self.dir_le.setText(dialog.directoryUrl().path())
+            self.scene.dir = self.dir_le.text()
 
     @QtCore.Slot()
     def cancel(self):
