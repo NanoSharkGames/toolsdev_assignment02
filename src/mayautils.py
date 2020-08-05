@@ -120,7 +120,7 @@ class SceneFile(object):
 
         for filename in dirs:
 
-            if filename.index(self.descriptor) > -1 and filename.endswith(self.ext):
+            if filename.startswith(self.descriptor) and filename.endswith(self.ext):
 
                 # Take the extension out of the filename.
                 filename = filename.replace('.' + self.ext, '')
@@ -131,12 +131,14 @@ class SceneFile(object):
                 # Only repopulate scene attributes if the filename has a descriptor AND version
                 if isinstance(_segments, list) and len(_segments) > 1:
 
+                    _versionTxt = _segments[1].lstrip('0')
+
                     # Retrieve the file name's version.
-                    _version = int(_segments[1].lstrip('0'))
+                    _version = int(_versionTxt)
 
                     if (_version > _highestVersion):
                         _highestVersion = _version
 
         if _highestVersion > 0:
-            self.set_version(_highestVersion)
+            self.set_version(_highestVersion + 1)
             self.save()
